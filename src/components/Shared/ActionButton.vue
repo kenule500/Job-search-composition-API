@@ -1,0 +1,50 @@
+<template>
+  <div>
+    <button :class="buttonClass">
+      {{ text }}
+    </button>
+  </div>
+</template>
+
+<script>
+import { computed } from "vue";
+export default {
+  name: "ActionButton",
+  props: {
+    text: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: false,
+      default: "primary",
+      validator(value) {
+        return ["primary", "secondary"].includes(value);
+      },
+    },
+  },
+  setup(props) {
+    const buttonClass = computed(() => {
+      return {
+        [props.type]: true,
+      };
+    });
+
+    return { buttonClass };
+  },
+};
+</script>
+
+<style scoped>
+button {
+  @apply px-5 py-3 font-medium;
+}
+.primary {
+  @apply rounded text-white  bg-brand-blue-1 hover:shadow-blue !important;
+}
+
+.secondary {
+  @apply text-brand-blue-1 bg-transparent hover:bg-brand-blue-2 hover:text-white !important;
+}
+</style>
