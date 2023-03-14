@@ -7,7 +7,7 @@ export interface Job {
   locations: string[];
   minimumQualifications: [];
   preferredQualifications: [];
-  description: string;
+  description: [];
   dateAdded: string;
 }
 export interface Spotlight {
