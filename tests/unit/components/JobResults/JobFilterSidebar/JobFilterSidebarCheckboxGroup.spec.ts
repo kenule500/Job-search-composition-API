@@ -5,6 +5,9 @@ import { useRouter } from "vue-router";
 jest.mock("vuex");
 jest.mock("vue-router");
 
+const useStoreMock = useStore as jest.Mock;
+const useRouterMock = useRouter as jest.Mock;
+
 describe("JobFilterSidebarCheckboxGroup", () => {
   const createConfig = (props = {}) => ({
     global: {
@@ -36,8 +39,8 @@ describe("JobFilterSidebarCheckboxGroup", () => {
   describe("when user clicks checkbox", () => {
     it("communicates that user has selected checkbox for value", async () => {
       const commit = jest.fn();
-      useStore.mockReturnValue({ commit });
-      useRouter.mockReturnValue({ push: jest.fn() });
+      useStoreMock.mockReturnValue({ commit });
+      useRouterMock.mockReturnValue({ push: jest.fn() });
       const props = {
         mutation: "SOME_MUTATIONS",
         uniqueValues: new Set(["Full-time"]),
@@ -46,7 +49,7 @@ describe("JobFilterSidebarCheckboxGroup", () => {
       const clicableArea = wrapper.find("[data-test='clickable']");
       await clicableArea.trigger("click");
       const fullTimeInput = wrapper.find("[data-test='Full-time']");
-      await fullTimeInput.setChecked();
+      await fullTimeInput.setValue();
 
       expect(commit).toHaveBeenCalledWith("SOME_MUTATIONS", ["Full-time"]);
     });
@@ -55,14 +58,14 @@ describe("JobFilterSidebarCheckboxGroup", () => {
       const props = {
         uniqueValues: new Set(["Full-time"]),
       };
-      useStore.mockReturnValue({ commit: jest.fn() });
+      useStoreMock.mockReturnValue({ commit: jest.fn() });
       const push = jest.fn();
-      useRouter.mockReturnValue({ push });
+      useRouterMock.mockReturnValue({ push });
       const wrapper = mount(JobFilterSidebarCheckboxGroup, createConfig(props));
       const clicableArea = wrapper.find("[data-test='clickable']");
       await clicableArea.trigger("click");
       const fullTimeInput = wrapper.find("[data-test='Full-time']");
-      await fullTimeInput.setChecked();
+      await fullTimeInput.setValue();
 
       expect(push).toHaveBeenCalledWith({ name: "jobResults" });
     });

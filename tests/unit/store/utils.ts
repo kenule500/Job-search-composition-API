@@ -1,11 +1,19 @@
-import { Job } from "@/api/types";
+import { Degree, Job } from "@/api/types";
 import state from "@/store/state";
 import { GlobalState } from "@/store/types";
+import { config } from "@fortawesome/fontawesome-svg-core";
 
 export const createState = (config: Partial<GlobalState> = {}): GlobalState => {
   const intinialStat = state();
   return { ...intinialStat, ...config };
 };
+
+export const createDegree = (config: Partial<Degree> = {}): Degree => ({
+  id: 1,
+  degree: "Bachelor's",
+  ...config,
+});
+
 export const createJob = (config: Partial<Job> = {}): Job => ({
   id: 1,
   title: "Angular Developer",

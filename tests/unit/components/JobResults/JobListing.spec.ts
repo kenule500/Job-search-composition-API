@@ -1,17 +1,14 @@
 import { mount, RouterLinkStub } from "@vue/test-utils";
 
 import JobListing from "@/components/JobResults/JobListing.vue";
+import { Job } from "@/api/types";
+import { createJob } from "../../store/utils";
 
 describe("JobListing", () => {
-  const createJobProps = (jobProbs = {}) => ({
-    title: "vue developer",
-    organization: "Air BnB",
-    ...jobProbs,
-  });
-  const createConfig = (jobProbs) => ({
+  const createConfig = (job: Job) => ({
     props: {
       job: {
-        ...jobProbs,
+        ...job,
       },
     },
     global: {
@@ -22,38 +19,38 @@ describe("JobListing", () => {
   });
 
   it("renders job title", () => {
-    const jobProbs = createJobProps({ title: "vue programmer" });
-    const wrapper = mount(JobListing, createConfig(jobProbs));
+    const job = createJob({ title: "vue programmer" });
+    const wrapper = mount(JobListing, createConfig(job));
     expect(wrapper.text()).toMatch("vue programmer");
   });
 
   it("renders job organization", () => {
-    const jobProbs = createJobProps({ organization: "Air BnB" });
-    const wrapper = mount(JobListing, createConfig(jobProbs));
+    const job = createJob({ organization: "Air BnB" });
+    const wrapper = mount(JobListing, createConfig(job));
     expect(wrapper.text()).toMatch("Air BnB");
   });
 
   it("renders job location", () => {
-    const jobProbs = createJobProps({
+    const job = createJob({
       locations: ["Port harcourt", "orlando"],
     });
-    const wrapper = mount(JobListing, createConfig(jobProbs));
+    const wrapper = mount(JobListing, createConfig(job));
     expect(wrapper.text()).toContain("Port harcourt");
     expect(wrapper.text()).toContain("orlando");
   });
 
   it("renders job qualifications", () => {
-    const jobProbs = createJobProps({
+    const job = createJob({
       minimumQualifications: ["HND", "School"],
     });
-    const wrapper = mount(JobListing, createConfig(jobProbs));
-    expect(wrapper.text()).toContain("HND");
-    expect(wrapper.text()).toContain("School");
+    const wrapper = mount(JobListing, createConfig(job));
+    expect(wrapper.text()).toMatch("HND");
+    expect(wrapper.text()).toMatch("School");
   });
 
   it("links to individual job's page", () => {
-    const jobProbs = createJobProps({ id: 20 });
-    const wrapper = mount(JobListing, createConfig(jobProbs));
+    const job = createJob({ id: 20 });
+    const wrapper = mount(JobListing, createConfig(job));
     const jobPageLink = wrapper.findComponent(RouterLinkStub);
     const toProps = jobPageLink.props("to");
     expect(toProps).toBe("jobs/results/20");

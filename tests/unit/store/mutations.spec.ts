@@ -1,8 +1,5 @@
-import { Job } from "@/api/types";
 import mutations from "@/store/mutations";
-import state from "@/store/state";
-import { GlobalState } from "@/store/types";
-import { createJob, createState } from "./utils";
+import { createDegree, createJob, createState } from "./utils";
 
 describe("mutations", () => {
   describe("LOGIN_USER", () => {
@@ -20,6 +17,15 @@ describe("mutations", () => {
       const jobTwo = createJob();
       mutations.RECEIVE_JOBS(startingState, [jobOne, jobTwo]);
       expect(startingState.jobs).toEqual([jobOne, jobTwo]);
+    });
+  });
+
+  describe("RECEIVE DEGREES", () => {
+    it("receive degrees from api response", () => {
+      const startingState = createState({ degrees: [] });
+      const degree = createDegree();
+      mutations.RECEIVE_DEGREES(startingState, [degree]);
+      expect(startingState.degrees).toEqual([degree]);
     });
   });
 
@@ -42,6 +48,14 @@ describe("mutations", () => {
         "Full-time",
         "Part-time",
       ]);
+    });
+  });
+
+  describe("ADD_SELECTED DEGREES", () => {
+    it("keeps track of which degree the user has choosen to filter jobs by", () => {
+      const startingState = createState({ selectedDegrees: [] });
+      mutations.ADD_SELECTED_DEGREES(startingState, ["Master's", "Bachelor's"]);
+      expect(startingState.selectedDegrees).toEqual(["Master's", "Bachelor's"]);
     });
   });
 });

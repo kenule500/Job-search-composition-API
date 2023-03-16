@@ -1,17 +1,20 @@
 import { useStore } from "vuex";
 jest.mock("vuex");
 
+const useStoreMOck = useStore as jest.Mock;
+
 import {
   useFilteredJobs,
   useUniqueJobTypes,
   useUniqueOrganizations,
   useFetchedJobsDispatch,
+  useUniqueDegrees,
 } from "@/store/composables";
 
 describe("composables", () => {
   describe("useFilteredJobs", () => {
     it("retreives jobs from the store", () => {
-      useStore.mockReturnValue({
+      useStoreMOck.mockReturnValue({
         getters: {
           FILTERED_JOBS: [{ id: 2 }],
         },
@@ -23,7 +26,7 @@ describe("composables", () => {
 
   describe("useUniqueJobTypes", () => {
     it("retreives unique job types from the store", () => {
-      useStore.mockReturnValue({
+      useStoreMOck.mockReturnValue({
         getters: {
           UNIQUE_JOB_TYPES: new Set(["Full-time"]),
         },
@@ -35,7 +38,7 @@ describe("composables", () => {
 
   describe("useUniqueOrganization", () => {
     it("retreives unique job organization from the store", () => {
-      useStore.mockReturnValue({
+      useStoreMOck.mockReturnValue({
         getters: {
           UNIQUE_ORGANIZATIONS: new Set(["Apple"]),
         },
@@ -45,14 +48,38 @@ describe("composables", () => {
     });
   });
 
+  describe("useUniqueDegress", () => {
+    it("retrieves unique degrees from stores", () => {
+      useStoreMOck.mockReturnValue({
+        getters: {
+          UNIQUE_DEGREES: ["Ph.D"],
+        },
+      });
+
+      const result = useUniqueDegrees();
+      expect(result.value).toEqual(["Ph.D"]);
+    });
+  });
+
   describe("fetchedJobsDispatch", () => {
     it("sends call to fetch jobs from API", () => {
       const dispatch = jest.fn();
-      useStore.mockReturnValue({
+      useStoreMOck.mockReturnValue({
         dispatch,
       });
       useFetchedJobsDispatch();
       expect(dispatch).toHaveBeenCalledWith("FETCH_JOBS");
+    });
+  });
+
+  describe("useFetchDegreesDispatch", () => {
+    it("sends call to fetch degress from API", () => {
+      const dispatch = jest.fn();
+      useStoreMOck({
+        dispatch,
+      });
+      useFetchedJobsDispatch();
+      expect(dispatch).toHaveBeenCalledWith("FETCH_DEGRESS");
     });
   });
 });

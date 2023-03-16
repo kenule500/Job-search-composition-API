@@ -1,12 +1,13 @@
 import { useRoute } from "vue-router";
 jest.mock("vue-router");
+const useRouteMock = useRoute as jest.Mock;
 
 import useCurrentPage from "@/composables/useCurrentPage";
 
 describe("useCurrentPage", () => {
   describe("when query params include page", () => {
     it("returns page", () => {
-      useRoute.mockReturnValue({
+      useRouteMock.mockReturnValue({
         query: {
           page: "5",
         },
@@ -18,7 +19,7 @@ describe("useCurrentPage", () => {
 
   describe("when query params exclude page", () => {
     it("defaults to page 1", () => {
-      useRoute.mockReturnValue({
+      useRouteMock.mockReturnValue({
         query: {},
       });
       const result = useCurrentPage();

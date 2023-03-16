@@ -5,9 +5,9 @@ export interface Job {
   degree: string;
   jobType: string;
   locations: string[];
-  minimumQualifications: [];
-  preferredQualifications: [];
-  description: [];
+  minimumQualifications: string[];
+  preferredQualifications: string[];
+  description: string[];
   dateAdded: string;
 }
 export interface Spotlight {
@@ -15,4 +15,9 @@ export interface Spotlight {
   img: string;
   title: string;
   description: string;
+}
+
+export interface Degree {
+  id: number;
+  degree: string;
 }
