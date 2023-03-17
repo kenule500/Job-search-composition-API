@@ -1,27 +1,29 @@
 <template>
   <JobFilterSidebarCheckboxGroup
-    :unique-values="uniqueJobTypes"
-    :mutation="ADD_SELECTED_JOB_TYPES"
-    data-test="job-types-filter"
+    :unique-values="uniqueDegrees"
+    :mutation="ADD_SELECTED_DEGREES"
+    data-test="degrees-filter"
   />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import JobFilterSidebarCheckboxGroup from "@/components/JobResults/JobFiltersSidebar/JobFilterSidebarCheckboxGroup.vue";
-import { useUniqueJobTypes } from "@/store/composables";
-import { ADD_SELECTED_JOB_TYPES } from "@/store/constants";
+import { ADD_SELECTED_DEGREES } from "@/store/constants";
+
+import { useUniqueDegrees } from "@/store/composables";
+
 export default defineComponent({
-  name: "JobFilterSidebarJobTypes",
+  name: "JobFilterSidebarDegrees",
   components: {
     JobFilterSidebarCheckboxGroup,
   },
   setup() {
-    const uniqueJobTypes = useUniqueJobTypes();
+    const uniqueDegrees = useUniqueDegrees();
 
     return {
-      ADD_SELECTED_JOB_TYPES,
-      uniqueJobTypes,
+      uniqueDegrees,
+      ADD_SELECTED_DEGREES,
     };
   },
 });

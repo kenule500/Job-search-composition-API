@@ -1,4 +1,4 @@
-import { mount } from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import JobFilterSidebarCheckboxGroup from "@/components/JobResults/JobFiltersSidebar/JobFilterSidebarCheckboxGroup.vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -10,13 +10,7 @@ const useRouterMock = useRouter as jest.Mock;
 
 describe("JobFilterSidebarCheckboxGroup", () => {
   const createConfig = (props = {}) => ({
-    global: {
-      stubs: {
-        FontAwesomeIcon: true,
-      },
-    },
     props: {
-      header: "some header",
       uniqueValues: new Set(["valueA", "valueB"]),
       mutation: "some mutations",
       ...props,
@@ -24,12 +18,14 @@ describe("JobFilterSidebarCheckboxGroup", () => {
   });
 
   it("renders unique list of job types fitering jobs", async () => {
+    useStoreMock.mockReturnValue({ commit: jest.fn(), subscribe: jest.fn() });
     const props = {
       uniqueValues: new Set(["valueA", "valueB"]),
     };
-    const wrapper = mount(JobFilterSidebarCheckboxGroup, createConfig(props));
-    const clicableArea = wrapper.find("[data-test='clickable']");
-    await clicableArea.trigger("click");
+    const wrapper = shallowMount(
+      JobFilterSidebarCheckboxGroup,
+      createConfig(props)
+    );
     const inputLabels = wrapper.findAll("[data-test='value']");
 
     const inputValues = inputLabels.map((node) => node.text());
@@ -39,15 +35,16 @@ describe("JobFilterSidebarCheckboxGroup", () => {
   describe("when user clicks checkbox", () => {
     it("communicates that user has selected checkbox for value", async () => {
       const commit = jest.fn();
-      useStoreMock.mockReturnValue({ commit });
+      useStoreMock.mockReturnValue({ commit, subscribe: jest.fn() });
       useRouterMock.mockReturnValue({ push: jest.fn() });
       const props = {
         mutation: "SOME_MUTATIONS",
         uniqueValues: new Set(["Full-time"]),
       };
-      const wrapper = mount(JobFilterSidebarCheckboxGroup, createConfig(props));
-      const clicableArea = wrapper.find("[data-test='clickable']");
-      await clicableArea.trigger("click");
+      const wrapper = shallowMount(
+        JobFilterSidebarCheckboxGroup,
+        createConfig(props)
+      );
       const fullTimeInput = wrapper.find("[data-test='Full-time']");
       await fullTimeInput.setValue();
 
@@ -58,12 +55,13 @@ describe("JobFilterSidebarCheckboxGroup", () => {
       const props = {
         uniqueValues: new Set(["Full-time"]),
       };
-      useStoreMock.mockReturnValue({ commit: jest.fn() });
+      useStoreMock.mockReturnValue({ commit: jest.fn(), subscribe: jest.fn() });
       const push = jest.fn();
       useRouterMock.mockReturnValue({ push });
-      const wrapper = mount(JobFilterSidebarCheckboxGroup, createConfig(props));
-      const clicableArea = wrapper.find("[data-test='clickable']");
-      await clicableArea.trigger("click");
+      const wrapper = shallowMount(
+        JobFilterSidebarCheckboxGroup,
+        createConfig(props)
+      );
       const fullTimeInput = wrapper.find("[data-test='Full-time']");
       await fullTimeInput.setValue();
 

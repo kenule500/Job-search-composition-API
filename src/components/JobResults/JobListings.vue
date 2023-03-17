@@ -3,7 +3,7 @@
     <ol>
       <JobListing
         v-for="job in displayedJobs"
-        :key="job"
+        :key="job.id"
         :job="job"
         data-test="job-listing"
       />

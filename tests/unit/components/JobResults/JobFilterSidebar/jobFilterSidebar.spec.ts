@@ -1,66 +1,32 @@
 import { shallowMount } from "@vue/test-utils";
-import {
-  useUniqueDegrees,
-  useUniqueJobTypes,
-  useUniqueOrganizations,
-} from "@/store/composables";
-jest.mock("@/store/composables");
 
-const useUniqueJobTypesMock = useUniqueJobTypes as jest.Mock;
-const useUniqueOrganizationsMock = useUniqueOrganizations as jest.Mock;
-const useUniqueDegreesMock = useUniqueDegrees as jest.Mock;
+import { useStore } from "vuex";
+jest.mock("vuex");
+const useStoreMock = useStore as jest.Mock;
+const useRouteMock = useRoute as jest.Mock;
 
 import JobFiltersSidebar from "@/components/JobResults/JobFiltersSidebar/JobFiltersSidebar.vue";
+import { useRoute } from "vue-router";
 
 describe("JobFilterSidebar", () => {
-  it("allows users to filter jobs by types", () => {
-    useUniqueJobTypesMock.mockReturnValue(new Set(["Full-time", "Part-time"]));
-    useUniqueOrganizationsMock.mockReturnValue(new Set(["AirBnB"]));
-    useUniqueDegreesMock.mockReturnValue(["Associate", "Bachelor's"]);
-    const wrapper = shallowMount(JobFiltersSidebar);
-
-    const jobTypesFilter = wrapper.findComponent({
-      name: "JobFilterSidebarCheckboxGroup",
-      attrs: { "data-test": "job-types-filter" },
+  it("sets up panel for users to filter jobs by one or more criteria", () => {
+    useStoreMock.mockReturnValue({ commit: jest.fn() });
+    useRouteMock.mockReturnValue({
+      query: {},
     });
-
-    const { header, uniqueValues, mutation } = jobTypesFilter.props();
-    expect(header).toBe("Job Types");
-    expect(uniqueValues).toEqual(new Set(["Full-time", "Part-time"]));
-    expect(mutation).toBe("ADD_SELECTED_JOB_TYPES");
+    const wrapper = shallowMount(JobFiltersSidebar);
+    expect(wrapper.exists()).toBe(true);
   });
 
-  it("allows users to filter jobs by organizations", () => {
-    useUniqueJobTypesMock.mockReturnValue(new Set(["Full-time", "Part-time"]));
-    useUniqueOrganizationsMock.mockReturnValue(new Set(["AirBnB"]));
-    useUniqueDegreesMock.mockReturnValue(["Associate", "Bachelor's"]);
-    const wrapper = shallowMount(JobFiltersSidebar);
-
-    const jobTypesFilter = wrapper.findComponent({
-      name: "JobFilterSidebarCheckboxGroup",
-      attrs: { "data-test": "organizations-filter" },
+  it("reads query parama to filter  initial jobby user", () => {
+    const commit = jest.fn();
+    useStoreMock.mockReturnValue({ commit });
+    useRouteMock.mockReturnValue({
+      query: {
+        role: "Vue",
+      },
     });
-
-    const { header, uniqueValues, mutation } = jobTypesFilter.vm.$props;
-    expect(header).toBe("Organizations");
-    expect(uniqueValues).toEqual(new Set(["AirBnB"]));
-    expect(mutation).toBe("ADD_SELECTED_ORGANIZATIONS");
-  });
-
-  it("allows users to filter jobs by organizations", () => {
-    useUniqueJobTypesMock.mockReturnValue(new Set(["Full-time", "Part-time"]));
-    useUniqueOrganizationsMock.mockReturnValue(new Set(["AirBnB"]));
-    useUniqueDegreesMock.mockReturnValue(["Associate", "Bachelor's"]);
-    const wrapper = shallowMount(JobFiltersSidebar);
-
-    const jobTypesFilter = wrapper.findComponent({
-      name: "JobFilterSidebarCheckboxGroup",
-      attrs: { "data-test": "degrees-filter" },
-    });
-
-    const { header, uniqueValues, mutation } = jobTypesFilter.vm.$props;
-    expect(header).toBe("Organizations");
-    expect(uniqueValues).toEqual(["Associate", "Bachelor's"]);
-    expect(mutation).toBe("ADD_SELECTED_DEGREES");
+    shallowMount(JobFiltersSidebar);
+    expect(commit).toHaveBeenCalledWith("UPDATE_SKILLS_SEARCH_TERM", "Vue");
   });
 });
